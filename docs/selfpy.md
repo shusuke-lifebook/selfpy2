@@ -565,3 +565,73 @@ start: 開始位置
 end: 終了位置
 step: ステップ(増減)
 ```
+
+#### 5.2.4 文字の種類を判定する
+
+- 文字列に含まれる文字の種類を判定するには、isxxxxx メソッドを利用する。
+  |メソッドの種類|概要|
+  |:---|:---|
+  |isalnum()|英数字であるか|
+  |isalpah()|英字であるか|
+  |isascii()|ASCII 文字であるか|
+  |isdecimal()|10 進数値であるか|
+  |isdigit()|数値であるか|
+  |isnumeric()|数値文字であるか|
+  |isidentifier()|有効な識別子であるか|
+  |islower()|小文字であるか|
+  |isupper()|大文字であるか|
+  |istitle()|単語の先頭文字だけが大文字であるか|
+  |isprintable()|印字可能な文字か否か|
+  |isspace()|空白文字であるか|
+- **文字列を数値に変換する**
+  - unicodedata モジュールの digit/numeric 関数を利用する
+- **予約済みの識別子を確認する**
+  - isidentifier メソッドは与えられた文字列が識別子として認められている文字のみで構成されているかを判定する。
+  - 文字列が予約済みの識別子であるか判定する場合、keyword モジュールの iskeyword 関数を利用する。
+
+#### 📒 5.2.5 文字列を検索する
+
+- 特定の文字列が登場する文字位置を取得するには、find/rfind メソッドを利用する。
+
+```Python
+s.find(sub ,[start, end])
+s.rfind(sub, [start, end]])
+
+s: 元の文字列
+sub: 検索文字列
+start: 検索開始位置
+end: 検索終了位置
+
+```
+
+- **例外を返す index/rindex メソッド**
+  - 検索文字列が見つからなかった場合に例外(ValueError)を返すのが index/rindex メソッド。
+  - 構文は find/rfind メソッドと同じ。
+- **部分文字列の登場回数をカウントする**
+  - 文字位置を検索する find/index メソッドに対して、count メソッドを利用することで、部分文字列が登場する回数をカウントすることもできる。
+
+```Python
+s.count(sub, [start, end])
+s: 元の文字列
+sub: 検索文字列
+start: 検索開始位置
+end: 検索終了位置
+```
+
+#### 📒 5.2.6 文字列の前後から空白を除去する
+
+- strip/lstrip/rstrip メソッドを利用することで、文字列前後の空白を除去できる。
+  - strip メソッドは前後の双方の空白
+  - lstrip は前方だけ
+  - rstrip は後方だけ
+
+```Python
+s.strip([chars])
+s.lstrip([chars])
+s.rstrip([chars])
+
+s: 元の文字列
+chars: 除去する文字群
+```
+
+#### 📒 5.2.7 文字列に特定の文字列が含まれているか判定する
