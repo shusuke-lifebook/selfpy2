@@ -749,3 +749,119 @@ errors: エラー時の挙動
 | strict  | エラー(例外)を発生させて処理を中止             |
 | ignore  | 変換できない文字は除去して、そのまま処理を継続 |
 | replace | 変換できない文字は「?」などに置換              |
+
+### 5.3 日付/時刻の操作
+
+- 組み込まれていないもので、アプリ開発でよく利用するのが日付／時刻値です。
+- Python で日付／時刻値を扱うには、datetime モジュールを利用するのが基本です。
+  |型|概要|
+  |:---|:---|
+  |datetime|日付／時刻値|
+  |date|日付値|
+  |time|時刻値|
+  |timezone|タイムゾーン情報|
+  |timedelta|時間間隔|
+
+#### 📒 5.3.1 日付／時刻値を生成する。
+
+- datetime モジュールは日付／時刻値を生成／初期化するために様々な方法を用意している。
+  |メソッド|概要|
+  |:---|:--|
+  |datetime.today()|現在の日時|
+  |date.today()|今日の日付|
+  |datetime.now()|現在の日時(タイムゾーン付き)|
+
+```Python
+timezone(ofset)
+ofset: 時差(timedelta型)
+
+ZoneInfo(key)
+key: タイムゾーンの名前
+
+```
+
+- **指定された年月日、時分秒から生成する**
+
+  - datetime/date/time 型は、それぞれ以下のようにインスタンス化できる。
+
+  ```Python
+  datetime(year, month, day, hour=0, minute=0, second=0, microsecond=0, tzinfo=None, *, fold=0)
+  date(year, month, day)
+  time(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
+
+  year: 年
+  month: 月
+  day: 日
+  hour: 時
+  minute: 分
+  second: 秒
+  microsecond: マイクロ秒
+  tzinfo: タイムゾーン情報
+  fold: 夏季時間を加味するか
+  ```
+
+- **日付／時刻を文字列から変換する**
+
+  - strptime メソッドを利用することで、文字列から日付／時刻値を datetime オブジェクトを生成できる。
+
+  ```Python
+  datetime.strptime(date_string, format)
+
+  date_string: 日付文字列
+  format: 解析に利用する書籍
+  ```
+
+- **タイムスタンプから生成する**
+
+```Python
+datetime.fromtimestamp(timestamp, tz=None)
+date.fromtimestamp(timestamp)
+
+timestamp: タイムスタンプ値
+tz: タイムゾーン
+```
+
+- **一部の要素を書き換えた日付を生成する**
+
+```Python
+dt.replace(year=self.year, month=self.month, day=self.day, hour=self.hour, minute=self.minute, second=self.second, microsecond=self.microsecond, tzinfo=self.tzionfo, *, fold=0)
+dat.replace(year=self.year, month=self.month, day=self.day)
+tim.replace(hour=self.hour, minute=self.minute, second=self.second, microsecond=self.microsecond, tzinfo=self.tzinfo, *, fold=0)
+
+dt: datetimeオブジェクト
+dat: dateオブジェクト
+tim: timeオブジェクト
+year: 年
+month: 月
+day: 日
+hour: 時
+minute: 分
+second: 秒
+microsecond: マイクロ秒
+tzinfo: タイムゾーン
+fold: 夏季時間を加味するか
+```
+
+#### 📒 5.3.2 年月日、時分秒などの時刻要素を取得する
+
+| 属性        | 概要                     |
+| :---------- | :----------------------- |
+| year        | 年                       |
+| month       | 月(1 ～ 12)              |
+| day         | 日(1 ～ 31)              |
+| hour        | 時(0 ～ 23)              |
+| minute      | 分(0 ～ 59)              |
+| second      | 秒(0 ～ 59)              |
+| microsecond | マイクロ秒(0 ～ 999999)  |
+| tzinfo      | タイムゾーン(timezon 型) |
+
+| メソッド      | 概要                                                         |
+| :------------ | :----------------------------------------------------------- |
+| date()        | 日付部分を取得                                               |
+| time()        | 時刻部分を取得(native)                                       |
+| timetz()      | 時刻部分を取得(aware)                                        |
+| timestamp()   | タイムスタンプ値を取得                                       |
+| toordinal()   | 西暦 1 年 1 月 1 日からの通算日                              |
+| weekend()     | 曜日を取得(0:月～ 6:日)                                      |
+| isoweekday()  | 曜日を取得(1:月～ 7:日)                                      |
+| isocalender() | (year=年,week=週番号,weekday=曜日)形式の名前付きタプルを取得 |
