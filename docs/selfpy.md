@@ -865,3 +865,63 @@ fold: 夏季時間を加味するか
 | weekend()     | 曜日を取得(0:月～ 6:日)                                      |
 | isoweekday()  | 曜日を取得(1:月～ 7:日)                                      |
 | isocalender() | (year=年,week=週番号,weekday=曜日)形式の名前付きタプルを取得 |
+
+#### 📒 5.3.3 日付／時刻値を加算／減算する
+
+```Python
+dt + delta
+dt - delta
+
+dt: 日付／時刻値(datetime/date/time)
+delta: 加算／減算する時間(timedelta)
+```
+
+```Python
+timedelta(days=0, weeks=0, hours=0, minutes=0, seconds=0, microseconds=0, millseconds=0)
+
+days: 日数
+weeks: 週数
+hours: 時間数
+minutes: 分数
+seconds: 秒数
+microseconds: マイクロ秒数
+millseconds: ミリ秒数
+```
+
+#### 📒 5.3.4 日付／時刻値の差分を求める
+
+- datetime/date/time 同士では「-」演算を利用することで、互いの差を求めることができる。
+
+```Python
+dt1 - dt2
+
+dt1/dt2: 日付／時刻値(datetime／date／time)
+```
+
+#### 📒 5.3.5 日付／時刻値を比較する
+
+- 「<」「>」などの比較演算子を利用することで、日付／時刻のいずれかの過去／未来かを判定することが可能
+
+#### 📒 5.3.6 日付／時刻を整形する
+
+- 日付／時刻値を整形するには、strftime メソッドを利用する。
+
+```Python
+dt.strftime(format)
+
+dt: 日付／時刻値(datetime/date/time)
+format: 書式文字列
+```
+
+- strftime メソッドはロケール(地域)情報によって変動する。最初に setlocale メソッドで明示的にロケールを設定する。
+
+```Python
+setlocale(category, locale=None)
+
+category: 設定する対象
+locale: ロケール値
+```
+
+#### 📒 5.3.7 カレンダーを生成する
+
+- カレンダーの生成に特化した calender モジュールを利用して生成する。
