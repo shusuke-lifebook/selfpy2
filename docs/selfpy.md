@@ -1303,6 +1303,7 @@ print(d7)
       - frozenset
 
 #### 📒 6.3.3 辞書の基本操作
+
 - 辞書の操作方法は、リスト／セットのそれを理解していれば、ごく直観的にわかる。
   - **辞書にキー／値を設定する**
     - 辞書に後からキー／値を追加する場合、ブラケット構文、または、setdefaultメソッドを利用する。
@@ -1355,11 +1356,11 @@ print(d7)
   - **辞書の内容を列挙する**
     - dictの内容を列挙するには以下のようなメソッドを利用する
 
-      |メソッド|概要|
-      |:---|:---|
-      |items()|キー／値のビューを取得|
-      |keys()|キーのビューを取得|
-      |values()|値のビューを取得|
+      | メソッド | 概要                   |
+      | :------- | :--------------------- |
+      | items()  | キー／値のビューを取得 |
+      | keys()   | キーのビューを取得     |
+      | values() | 値のビューを取得       |
 
       ```Python
       d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
@@ -1378,6 +1379,7 @@ print(d7)
       for value in d.values():
           print(value)
       ```
+
   - **辞書のキーを比較する**
     - keysメソッドの戻り値は、セットと同じく、「&」「|」などの演算子を用いることで積集合や和集合を求めることができる
       ```Python
@@ -1385,3 +1387,114 @@ print(d7)
       d2 = {"grape": "ぶどう", "orange": "蜜柑", "pear": "なし", "apple": "林檎"}
       print(d1.keys() & d2.keys())
       ```
+  - **複数の辞書を結合する**
+    - 辞書そのものに対して、「|」(論理和)の演算子を用いた場合は、複数の辞書を結合できる。
+      ```Python
+      d1 = {"apple": "りんご", "melon": "メロン"}
+      d2 = {"grape": "ぶどう", "pear": "なし", "apple": "林檎"}
+      print(d1 | d2)
+      print(d2 | d1)
+      ```
+  - **規定値を持つ辞書を定義する ----defaultdict**
+    - リストdataに含まれるそれぞれの名前の出現数をカウントするためのコード
+
+      ```Python
+      data = ["太郎", "花子", "次郎", "太郎", "太郎", "太郎", "花子"]
+      result = {}
+
+      for key in data:
+          if key in result:
+              result[key] += 1
+          else:
+              result[key] = 1
+
+      print(result)
+      ```
+
+    - いちいち初期化の判定をするのが面倒に思える。collectionsモジュールのdefaultdict型を利用する
+
+      ```Python
+      from collections import defaultdict
+
+      data = ["太郎", "花子", "次郎", "太郎", "太郎", "太郎", "花子"]
+      result = defaultdict(int)
+
+      for key in data:
+          result[key] += 1
+
+      print(result)
+
+      ```
+
+      ```Python
+      defaultdictコンストラクター
+
+      defaultdict(factory[,args])
+
+      factory: 規定値を生成する関数
+      args: dictコンストラクター相当の引数
+      ```
+
+#### 📒 6.3.5 辞書内包表記
+
+- リスト内包表記／セット内包表記と同様、辞書でも内包表記を利用できる
+
+  ```Python
+  {キー： 値 for 仮変数 in イテラブル if 条件式}
+  ```
+
+  ```Python
+  d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+  result = {value: key for key, value in d.items()}
+  print(result)
+  ```
+
+#### 📒 6.3.6 辞書型でのパターンマッチング
+
+- パターンマッチングは辞書型に対しても用いることができる(**マッピングパターン**)
+
+  ```Python
+  # 書籍情報を表す辞書
+  book = {
+      "isbn": "978-4-7981-8055-7",
+      "title": "独習 ASP.NET Core",
+      "publisher": "翔泳社",
+      "price": 4290,
+      "page": 672,
+  }
+
+  # 記事情報を表す辞書
+  article = {
+      "url": "https://codezine.jp/article/corner/1009",
+      "title": "「GitHub Copilot」 入門",
+      "time": 8,
+  }
+
+  match book:
+      case {"isbn": _, "title": title, "publisher": publisher}:
+          print(f"{title} ({publisher}刊)")
+      case {"url": url, "title": title}:
+          print(f"{title} ({url})")
+      case _:
+          print("コンテンツの種類が不明です。")
+  ```
+
+- **複数のキーをまとめてキャプチャーする**
+  - 「\*\*変数」で、指定されなかったキーをまとめてキャプチャすることもできる
+
+    ```Python
+    # 書籍情報を表す辞書
+    book = {
+        "isbn": "978-4-7981-8055-7",
+        "title": "独習 ASP.NET Core",
+        "publisher": "翔泳社",
+        "price": 4290,
+        "page": 672,
+    }
+
+    match book:
+        case {"isbn": _, "title": title, **info}:
+            print(f"{title} ({info})")
+        case {"url": url, "title": title}:
+            print(f"{title} ({url})")
+    ```

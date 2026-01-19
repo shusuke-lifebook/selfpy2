@@ -29,5 +29,9 @@
 
   // --- VSCode UI カスタマイズ ---
   "workbench.iconTheme": "vscode-icons",
-  "workbench.colorTheme": "Monokai"
+  "workbench.colorTheme": "Monokai",
+
+  // --- gitの設定 ---
+  "git.autofetch": true,
+  "git.autofetchPeriod": 180
 }
