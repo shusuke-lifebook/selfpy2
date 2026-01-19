@@ -1293,3 +1293,95 @@ print(d7)
 #### 📒 6.3.2 ハッシュ表とキーの注意点
 
 - dict(辞書)は内部的に**ハッシュ表(ハッシュテーブル)**と呼ばれるリストを持つ
+  - **キーはハッシュ可能であること**
+    - 辞書(dict)のキーは、ハッシュ値を算出可能な型でなければならない。このような性質を**hashable(ハッシュ可能)**と呼ぶ
+    - 組み込み型では以下のような型がhashableです。
+      - int
+      - str
+      - bytes
+      - tuple
+      - frozenset
+
+#### 📒 6.3.3 辞書の基本操作
+- 辞書の操作方法は、リスト／セットのそれを理解していれば、ごく直観的にわかる。
+  - **辞書にキー／値を設定する**
+    - 辞書に後からキー／値を追加する場合、ブラケット構文、または、setdefaultメソッドを利用する。
+      ```Python
+      d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+      d["apple"] = "林檎"
+      d["strawberry"] = "いちご"
+      print(d.setdefault("apple", "〇"))
+      print(d.setdefault("watermelon", "〇"))
+      print(d)
+      ```
+  - **辞書に複数のキー／値を設定する**
+    - 複数のキー／値をまとめて設定するならば、updateメソッドを利用できる
+      ```Python
+      d1 = {"apple": "りんご", "orange": "みかん"}
+      d2 = {"melon": "メロン", "orange": "蜜柑"}
+      d1.update(d2)
+      print(d1)
+      d1.update(strawberry="いちご", watermelon="スイカ")
+      print(d1)
+      d1.update([("pear", "なし"), ("grape", "ぶどう")])
+      print(d1)
+      ```
+  - **辞書から値を取得する**
+    - 辞書から値を取得するには、ブラケット構文をはじめ、get、pop／popitemメソッドが利用できる。
+      ```Python
+      d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+      # print(d["pear"])  # エラー KeyError: 'pear'
+      print(d.get("pear", "×"))
+      print(d.pop("melon", "×"))
+      print(d.popitem())
+      print(d)
+      ```
+  - **特定のキーが含まれているかを判定する**
+    - 値ではなく、単にキーが存在するかどうかを判定したいだけであれば、in演算子を利用する
+      ```Python
+      d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+      print("orange" in d)
+      print("pear" in d)
+      ```
+  - **辞書からキーを削除する**
+    - del命令で個別のキーを削除し、clearメソッドですべてのキーを破棄する。
+      ```Python
+      d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+      del d["orange"]
+      print(d)
+      d.clear()
+      print(d)
+      ```
+  - **辞書の内容を列挙する**
+    - dictの内容を列挙するには以下のようなメソッドを利用する
+
+      |メソッド|概要|
+      |:---|:---|
+      |items()|キー／値のビューを取得|
+      |keys()|キーのビューを取得|
+      |values()|値のビューを取得|
+
+      ```Python
+      d = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+      # 項目を列挙
+      for item in d.items():
+          print(item)
+
+      for key, value in d.items():
+          print(key, ":", value)
+
+      # キーを列挙
+      for key in d.keys():
+          print(key)
+
+      # 値を列挙
+      for value in d.values():
+          print(value)
+      ```
+  - **辞書のキーを比較する**
+    - keysメソッドの戻り値は、セットと同じく、「&」「|」などの演算子を用いることで積集合や和集合を求めることができる
+      ```Python
+      d1 = {"apple": "りんご", "orange": "みかん", "melon": "メロン"}
+      d2 = {"grape": "ぶどう", "orange": "蜜柑", "pear": "なし", "apple": "林檎"}
+      print(d1.keys() & d2.keys())
+      ```
