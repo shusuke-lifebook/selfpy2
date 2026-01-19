@@ -1498,3 +1498,107 @@ print(d7)
         case {"url": url, "title": title}:
             print(f"{title} ({url})")
     ```
+
+## 📒 7. 標準ライブラリ
+
+- 正規表現
+- ファイルの操作
+- HTTP通信
+- 数学演算など
+
+### 📒 7.1 正規表現
+
+- **正規表現**とは「あいまいな文字列パターンを表現する記法」です。
+
+#### 📒 7.1.1 正規表現の基本
+
+- 正規表現によって表されたある文字列パターンのことを**正規表現パターン**という。ある文字列の中に含まれる場合、文字列が正規表現パターンに**マッチする**と言います。
+
+#### 📒 7.1.2 文字列が正規表現パターンにマッチしたかを判定する
+
+```Python
+import re
+
+msg = "電話番号は080-111-9999です。"
+# 正規表現の準備
+ptn = re.compile(r"(\d{2,4})-(\d{2,4})-(\d{4})")
+# 文字列を検索&結果を表示
+if result := ptn.search(msg):
+    print(result.group(0))
+    print(result.group(1))
+    print(result.group(2))
+    print(result.group(3))
+else:
+    print("見つかりませんでした。")
+```
+
+- 正規表現を利用するには、まず、reモジュールのcompile関数で正規表現を準備する。
+
+  ```Python
+  compile(pattern, flags=0)
+
+  pattern: 正規表現パターン
+  flags: 正規表現オプション
+  ```
+
+  ```Python
+  ptn.search(string[, pos, [endpos]])
+
+  ptn: Patternオブジェクト
+  string: 検索対象の文字列
+  pos: 検索開始位置
+  endpos: 検索終了位置
+  ```
+
+  | メソッド／属性      | 概要                                                    |
+  | :------------------ | :------------------------------------------------------ |
+  | group([group, ...]) | group番目にマッチした部分文字を取得                     |
+  | start([group])      | 開始位置を取得                                          |
+  | end([group])        | 終了位置を取得                                          |
+  | span([group])       | 「開始位置,終了位置」形式のタプルを取得                 |
+  | expand(templ)       | マッチした結果をテンプレートtemplに埋め込んだ結果を取得 |
+  | pos                 | 検索時に指定された開始位置                              |
+  | endpos              | 検索時に指定された終了位置                              |
+  | lastindex           | 最後にマッチしたインデックス                            |
+  | lastgroup           | 最後にマッチしたグループの名前                          |
+
+#### 📒 7.1.3 マッチしたすべての文字列を取得する
+
+- search/matchメソッドで得られる結果は、いずれも最初にマッチした文字列1つだけ、もしもマッチした文字列をすべて取得したいなら、findall/finditerメソッドを利用する
+
+```Python
+ptn.findall(string[,pos[,endopos]])
+ptn.finditer(string[,pos[,endopos]])
+
+ptn: Patternオブジェクト
+string: 文字列
+pos: 検索開始位置
+endpos: 検索終了位置
+```
+
+#### 📒 7.1.4 正規表現オプションでマッチング時の挙動を制御する
+
+- Patternクラスをインスタンス化する際には、第2引数に検索オプション(マッチフラグ)を渡すこともできる。
+
+  | 設定値        | 概要                                                       |
+  | :------------ | :--------------------------------------------------------- |
+  | IGNORECASE、I | 大文字小文字を区別しない                                   |
+  | MULTILINE、M  | 複数行モードの有効化                                       |
+  | DOTALL、S     | 「.」が行末記号を含む任意の文字にマッチ(単一行モード)      |
+  | VERBOSE、X    | 空白とコメントを有効化                                     |
+  | ASCII、A      | \w/\W、\b/\B、\d/\D、\s/\SでASCII文字に限定したマッチ【1】 |
+  | LOCALE、L     | \w、\Wなどをロケールに従って処理                           |
+
+- **大文字／小文字を区別しない**
+
+  ```Python
+  import re
+
+  msg = "仕事はwings@example.comです。プライベート用はYAMA@example.comです。"
+  ptn = re.compile(
+      r"[a-z0-9.!#$%&\'*+/=?^_{|}~-]+@[a-z0-9-]+(\.[a-z0-9-]+)*", re.IGNORECASE
+  )
+  results = ptn.finditer(msg)
+  for result in results:
+      print(result.group())
+  ```
