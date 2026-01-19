@@ -1264,3 +1264,32 @@ other: 比較のセット
 ```Python
 {式 for 仮変数 in イテラブル型 if 条件式}
 ```
+
+### 📒 6.3 辞書(dict)型
+
+- **辞書(dict)**は、一意のキーと値をペアで管理されるデータ構造。言語によっては**ハッシュ、連想配列**と呼べれる場合もある。
+
+#### 📒 6.3.1 辞書の生成
+
+- 様々な方法で辞書を作成してみよう
+
+```Python
+d1 = {"red": "赤", "white": "白", "yellow": "黄"}
+print(d1)
+d2 = {}
+print(d2)
+d3 = dict(red="赤", white="白", yellow="黄")
+print(d3)
+d4 = dict([("red", "赤"), ("white", "白"), ("yellow", "黄")])
+print(d4)
+d5 = dict({"yellow": "黄", "white": "白", "red": "赤"})
+print(d5)
+d6 = dict({"red": "赤", "white": "白", "yellow": "黄"}, white="白", black="黒")
+print(d6)
+d7 = dict(zip(["red", "white", "yellow"], ["赤", "白", "黄"]))
+print(d7)
+```
+
+#### 📒 6.3.2 ハッシュ表とキーの注意点
+
+- dict(辞書)は内部的に**ハッシュ表(ハッシュテーブル)**と呼ばれるリストを持つ
