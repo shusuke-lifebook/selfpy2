@@ -2093,3 +2093,69 @@ endpos: 検索終了位置
 - HTTP経由で外部の情報／サービスにアクセスするための手段を提供する
 - requestsライブラリのインストール
   - pip install requests
+  - pip freeze > requirements.txt
+
+#### 📒 7.4.1 requestsモジュールの基本
+
+- requestsモジュールの基本的なサンプルから見ていく。Codezine(https://codezine.jp/)にアクセスして取得したページをコンソールにテキスト表示する例です。
+
+  ```Python
+  import requests
+
+  res = requests.request("get", "https://codezine.jp/")
+  print(res.text)
+  ```
+
+  - request関数
+
+    ```Python
+    request(method, url, **kwargs)
+
+    method: HTTPメソッド
+    url: URL
+    kwargs:　「オプション名：値」形式のオプション
+    ```
+
+    | オプション      | 概要                                          |
+    | :-------------- | :-------------------------------------------- |
+    | params          | クエリ情報「キー名：値」形式の辞書            |
+    | data            | リクエスト本文「キー名：値」形式の辞書        |
+    | json            | リクエスト本文                                |
+    | headers         | リクエストヘッダー「ヘッダー名:値」形式の辞書 |
+    | cookies         | クッキー「クッキー名:値」形式の辞書           |
+    | files           | ファイル「名前:値」形式の辞書                 |
+    | timeout         | タイムアウト時間                              |
+    | allow_redirects | リダイレクトを追跡するか                      |
+
+  - request関数の戻り値は、サーバからの応答データを表すResponseオブジェクトです。
+    - Responseオブジェクトの主な属性／メソッド
+
+    | 属性／メソッド               | 概要                         |
+    | :--------------------------- | :--------------------------- |
+    | apparent_encoding            | 見た目の文字エンコーディング |
+    | content                      | コンテンツ本体(バイト単位)   |
+    | headers                      | 応答ヘッダ(辞書)             |
+    | iter_lines(chunk_size=10240) | 応答データ反復処理           |
+    | json()                       | JSONデータを取得             |
+    | raw                          | 生のデータ                   |
+    | status_code                  | 応答ステータスコード         |
+    | reason                       | 応答ステータス(テキスト)     |
+    | text                         | コンテンツ本体(Unicode)      |
+    | url                          | 最終的なURL                  |
+
+#### 📒 7.4.2 HTTP POSTによる通信
+
+- まとまったデータを送信するには、HTTP POSTを利用する
+
+  ```Python
+  import requests
+
+  res = requests.post("https://wings.msn.to/tmp/post.php", data={"name": "佐々木新之助"})
+  print(res.text)
+
+  ```
+
+#### 📒 7.4.3 JSONデータを取得する
+
+- HTTP 経由でデータの受け渡しする場合、JSON(JavaScript Object Notation)と呼ばれる形式がよく利用される。
+- JSONとは名前の通り、JavaScriptのオブジェクトリテラルをもとにしたデータ形式でその性質上、JavaScriptとの親和性に優れる。
