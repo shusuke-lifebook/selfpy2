@@ -2462,3 +2462,112 @@ def 関数名(引数,....):
 #### 📒 8.4.1 引数の既定値
 
 - 「引数=値」の形式で、仮引数に既定値を設定できる。
+- 既定値を利用する場合の注意点
+  - 関数の既定値は、定義時点で一度だけ評価されるの基本です。この性質上、以下ようのなケースでは要注意です。
+  - (1) 既定値として変数を受け取る場合
+    - my_func関数の引数paramが既定値として変数msgを受け取る例
+
+      ```Python
+      msg = "before"
+
+
+      def my_func(param: str = msg) -> None:
+          print(param)
+
+
+      msg = "after"
+      my_func()
+
+      ```
+
+    - 既定値を評価するのは定義のタイミングのため、msgは「before」となる。
+
+  - (2) 既定値がミュータブルなオブジェクトの場合
+
+    ```Python
+    def my_func(value: int, data: list[int] | None = None) -> list[int]:
+        if data is None:
+            data = []
+        data.append(value)
+        return data
+
+
+    print(my_func(13))
+    print(my_func(108))
+    ```
+
+#### 📒 8.4.2 キーワード引数
+
+- **キーワード引数**とは、呼び出し時には名前を伴う引数のこと。キーワード引数を利用することで以下のような呼び出し可能になる。
+
+  ```Python
+  def get_triangle(base: float = 5, height: float = 1) -> float:
+      return base * height / 2
+
+
+  print(get_triangle(height=10))
+  print(get_triangle(height=10, base=2))
+
+  ```
+
+- キーワード引数を利用することで、以下のようなメリットがある。
+  - 引数が多くても、意味を把握しやすい
+  - 必要な引数だけスマートに表現できる
+  - 引数の順序を自由に変更できる。
+- 呼び出しに際して、明示的に名前を指定しなければならないので、コードが冗長になるデメリットもある
+  - そもそも引数の数が多い
+  - 省略可能な引数が多く、省略パターンにもさまざまな組み合わせがある
+  - 上記のようなケースでは有効
+
+- **キーワード引数／位置引数を強制する**
+  - 仮引数リストの途中に「\*」を加えることで、それ以降の引数はキーワード引数として渡せなければならないという指定になる。
+
+    ```Python
+    # arg2,3はキーワードは引数であること
+    def my_func(arg1: int, *, arg2: int = 0, arg3: int = 0) -> None:
+        pass
+
+
+    # my_func(1, 2, 3)  # エラー　1 個の位置引数が必要です
+    my_func(1, arg2=2, arg3=3)  # OK
+
+    ```
+
+  - Python3.8以降では引数のリストの途中に「/」を加えることで、それ以前の引数は位置引数であることを強制できるようになる
+
+    ```Python
+    # arg1は位置引数であること
+    def my_func(arg1: int, /, arg2: int = 0, arg3: int = 0) -> None:
+        pass
+
+
+    # my_func(arg1=10, arg2=20)  # エラー さらに 1 つの位置引数が必要です
+    my_func(10, arg2=20)  # OK
+
+    ```
+
+#### 📒 8.4.3 可変長引数の関数
+
+- **可変長引数**の関数とは、引数の個数が予め決まっていない関数です。
+
+  ```Python
+  def total_products(*values: int) -> int:
+      result = 1
+      for value in values:
+          result *= value
+      return result
+
+
+  print(total_products(12, 15, -1))
+  print(total_products(5, 7, 8, 2, 1, 15))
+  ```
+
+- **可変長引数の注意点**
+  - (1) 可変長引数は1関数1つまで
+  - (2) 可変長引数の後方にはキーワード引数のみ指定できる
+  - (3) 想定される引数まで可変長引数に纏めない。
+  - (4) 可変長引数で「1個以上の引数」を表す方法
+
+#### 📒 8.4.4 可変長引数(キーワード引数)
+
+- 「\*」の代わり「\*\*」を付与することで、不特定のキーワード引数を受け取ることができる。
