@@ -2571,3 +2571,42 @@ def 関数名(引数,....):
 #### 📒 8.4.4 可変長引数(キーワード引数)
 
 - 「\*」の代わり「\*\*」を付与することで、不特定のキーワード引数を受け取ることができる。
+
+  ```Python
+  def create_dict(**kwargs: str | int) -> dict[str, str | int]:
+      result = dict()
+      for key, value in kwargs.items():
+          result[key] = value
+      return result
+
+
+  d = create_dict(name="山田太郎", age=30, sex="male")
+  print(d)
+
+  ```
+
+- **TypedDictによる \*\*kwargsの型定義**
+  - Python3.12以降では、typedDictを使って、個々のキーワード単位に型を指定できるようになった。
+
+    ```Python
+    from typing import NotRequired, TypedDict, Unpack
+
+
+    # title, size, fullキーを持つ型付き辞書を準備
+    class KeywordArgs(TypedDict):
+        title: str
+        size: int
+        full: NotRequired[bool]
+
+
+    def hoge(**kwargs: Unpack[KeywordArgs]) -> None:
+        print(kwargs)
+
+
+    hoge(title="Python入門", size=100, full=True)
+    hoge(title="Hello", size=100)
+    # hoge(title="Hello", full=True) # エラー
+    # hoge(title="Hello", size="100px") # エラー
+    # hoge(title="Hello", size=100, none='none') # エラー
+
+    ```
