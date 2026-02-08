@@ -2845,3 +2845,83 @@ clazz: 任意の型
       print(process(Book("これからはじめるReact実践入門")))
 
   ```
+
+## 📒 9. ユーザー定義関数(応用)
+
+### 📒 9.1 デコレーター
+
+- **デコレーター(関数デコレーター)**は、既存の関数に機能を追加する仕組みです。
+
+#### 📒 9.1.1 デコレーターを利用しない例
+
+```Python
+from collections.abc import Callable
+from typing import Any
+
+
+def log_func(func: Callable[..., Any]) -> Callable[..., Any]:
+    # 関数内関数を定義
+    def inner(*args, **keywds):
+        print("----------")
+        print(f"Name: {func.__name__}")
+        print(f"Args: {args}")
+        print(f"Keywds: {keywds}")
+        print("----------")
+        return func(*args, **keywds)
+
+    return inner
+
+
+def hoge(x: int, y: int, m: str = "bar", n: str = "piyo") -> None:
+    print(f"hoge: {x}-{y}/{m}-{n}")
+
+
+# log_func関数の戻り値を実行
+log_hoge = log_func(hoge)
+log_hoge(10, 37, m="ほげ", n="ぴょ")
+```
+
+#### 📒 9.1.2 デコレータ―の基本
+
+```Python
+from collections.abc import Callable
+from typing import Any
+
+
+def log_func(func: Callable[..., Any]) -> Callable[..., Any]:
+    # 関数内関数を定義
+    def inner(*args, **keywds):
+        print("----------")
+        print(f"Name: {func.__name__}")
+        print(f"Args: {args}")
+        print(f"Keywds: {keywds}")
+        print("----------")
+        return func(*args, **keywds)
+
+    return inner
+
+
+@log_func
+def hoge(x: int, y: int, m: str = "bar", n: str = "piyo") -> None:
+    print(f"hoge: {x}-{y}/{m}-{n}")
+
+
+hoge(15, 37, m="ほげ", n="ぴょ")
+
+```
+
+- 拡張したい関数(ここではhoge)の頭に「@名前」の形式で、高階関数を指定するだけです。
+- これでhoge関数はlog_func関数で拡張された(=修飾された)とみなされる。
+
+#### 📒 9.1.3 標準デコレーターの例
+
+- **関数／メソッドなどが非推奨であることを宣言する - @deprecated**
+  - warningsモジュールのdeprecatedデコレータを利用することで、関数／メソッドが非推奨であることを利用者に警告する。
+
+### 📒 9.2 ジュネレーター
+
+### 📒 9.3 関数のモジュール化
+
+### 📒 9.4 非同期処理
+
+### 📒 9.5 ドキュメンテーション
