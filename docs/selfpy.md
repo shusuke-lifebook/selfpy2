@@ -2678,3 +2678,116 @@ NamedTuple(typename, field_names)
 typename: 型の名前
 field_names: 「要素名, 型」形式(タプル)のリスト
 ```
+
+#### 📒 8.5.2 再帰関数
+
+- **再帰関数**とは、自分自身の呼び出している関数のこと。
+- 例えば階乗を求めるfactorial関数の例
+
+  ```Python
+  def factorial(num: int) -> int:
+      if num != 0:
+          return num * factorial(num - 1)
+      return 1
+
+
+  print(factorial(5))
+
+  ```
+
+#### 📒 8.5.3 高階関数
+
+- 「関数を引数／戻り値として扱う関数」のことを高階関数という。
+- **高階関数の基本**
+
+  ```Python
+  from collections.abc import Callable
+  from typing import Any
+
+
+  # 高階関数walk_list関数を定義
+  def walk_list(data: list[Any], func: Callable[[Any, int], None]) -> None:
+      # リストの内容を順に処理
+      for key, value in enumerate(data):
+          # func経由で指定の関数を呼び出し
+          func(value, key)
+
+
+  # リストを処理するためのユーザー定義関数
+  def show_item(value: Any, key: int) -> None:
+      print(key, ":", value)
+
+
+  data = [105, 53, 27, 87, 33]
+  walk_list(data, show_item)
+
+  ```
+
+#### 📒 8.5.4 無名関数(ラムダ式)
+
+- \*\*ラムダ式(lambda式)構文：名前の通り、関数を式として表現できる。そのまま引数に渡せる。
+- ラムダ式
+
+  ```Python
+  lambda 引数, ....: 戻り値となる式
+  ```
+
+  ```Python
+  from collections.abc import Callable
+  from typing import Any
+
+
+  # 高階関数
+  def walk_list(data: list[Any], func: Callable[[Any, int], None]) -> None:
+      for key, value in enumerate(data):
+          func(value, key)
+
+
+  data = [105, 53, 27, 87, 33]
+  walk_list(data, lambda value, key: print(key, ":", value))
+  ```
+
+- **ラムダ式のさまざまな書き方**
+  - (1) 変数に代入する
+    ```Python
+    calcu = lambda num: num * 2
+    print(calcu(10)) # 結果 20
+    ```
+  - (2) 引数を持たないラムダ式
+    ```Python
+    from datetime import date
+    now = lambda: date.today()
+    print(now())
+    ```
+  - (3) 条件分岐を伴うラムダ式
+    ```Python
+    isPass = lambda point: '合格' if point > 70 else '不合格'
+    ```
+
+#### 📒 8.5.5 関数のオーバーロード
+
+- **オーバーロード**とは、「名前は同じで、引数が異なる関数を複数設置」するための仕組み
+
+  ```Python
+  def process(value: int | str) -> int | str:
+      if isinstance(value, int):
+          return str(value)
+      elif isinstance(value, str):
+          return len(value)
+      else:
+          raise TypeError("不正な型です。")
+
+
+  result1: str = process(123)  # type: ignore
+  result2: int = process("hoge")  # type: ignore
+
+  ```
+
+- isinstance 関数
+
+```Python
+isinstance(obj, clazz)
+
+obj: 判定するインスタンスの値
+clazz: 任意の型
+```
