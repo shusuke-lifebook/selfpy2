@@ -2791,3 +2791,57 @@ isinstance(obj, clazz)
 obj: 判定するインスタンスの値
 clazz: 任意の型
 ```
+
+#### 📒 8.5.6 型ガード
+
+- **型ガード**とは変数の型を特定することで、対象となった変数の型を絞り込むための仕組みです。
+
+  ```Python
+  def process(value: str | int) -> str | int:
+      if isinstance(value, str):
+          return value.upper()
+      else:
+          return value + 10
+
+
+  print(process("abc"))
+  print(process(100))
+
+  ```
+
+- **ユーザー定義の型ガード関数**
+
+  ```Python
+  from typing import Any, TypeIs
+
+
+  class Magazine:
+      pass
+
+
+  class Book:
+      def __init__(self, title: str) -> None:
+          self.title = title
+
+      def show_title(self) -> str:
+          return self.title[:10]
+
+
+  # def process(data: Book | Magazine) -> str | None:
+  #     if hasattr(data, "title"):
+  #         return data.show_title()
+
+
+  def is_book(data: Any) -> TypeIs[Book]:
+      return hasattr(data, "title")
+
+
+  def process(data: Book | Magazine) -> str | None:
+      if is_book(data):
+          return data.show_title()
+
+
+  if __name__ == "__main__":
+      print(process(Book("これからはじめるReact実践入門")))
+
+  ```
