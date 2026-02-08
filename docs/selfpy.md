@@ -2625,5 +2625,56 @@ def 関数名(引数,....):
 - 同様に「\*\*」を付与することで、辞書(dict)をキーワード引数に展開できます。
 
 ```Python
+data = ["こんにちは", "おはよう", "おやすみ"]
+keywd = {"sep": ",", "end": "●"}
+print(*data, **keywd)  # type: ignore
 
+```
+
+### 📒 8.5 関数呼び出しと戻り値
+
+#### 📒 8.5.1 複数の戻り値
+
+- 関数から複数の値を返したいというケースはよくある。この場合、戻り値をタプルとして束ねて返すのが一般的です。
+- 与えられた任意の引数に対して、それぞれ、最大値／最小値を求めるget_max_min関数の例
+
+  ```Python
+  def get_max_min(*args: float) -> tuple[float, float]:
+      return (max(args), min(args))
+
+
+  max_v, min_v = get_max_min(15, 7.5, 108, -10)
+  print(max_v)
+  print(min_v)
+
+  ```
+
+- **名前付きのタプルを生成する**
+  - typingモジュールNamedTuple関数を利用する
+
+    ```Python
+    from typing import NamedTuple
+
+    # MaxMin型の名前付きタプルを定義
+    MaxMin = NamedTuple("MaxMin", [("max", float), ("min", float)])
+
+
+    def get_max_min(*args: float) -> MaxMin:
+        return MaxMin(max(args), min(args))
+
+
+    result = get_max_min(15, 7.5, 108, -10)
+    print(result.max)
+    print(result.min)
+    print(result[0])
+
+    ```
+
+  - NamedTuple関数
+
+```Python
+NamedTuple(typename, field_names)
+
+typename: 型の名前
+field_names: 「要素名, 型」形式(タプル)のリスト
 ```
