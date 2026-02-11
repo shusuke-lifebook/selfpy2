@@ -2917,8 +2917,151 @@ hoge(15, 37, m="ほげ", n="ぴょ")
 
 - **関数／メソッドなどが非推奨であることを宣言する - @deprecated**
   - warningsモジュールのdeprecatedデコレータを利用することで、関数／メソッドが非推奨であることを利用者に警告する。
+- **関数の結果をキャッシュする - @lru_cache**
+  - もうひとつ、functoolsモジュールの@lru_cacheデコレーターを使って、関数の結果をキャッシュする。
+
+#### 📒 9.1.4 引数を受け取るデコレーター
+
+- 引数を受け取るデコレーターでは関数の入れ子が1段階増える点に注目です。外側から、
+  - デコレーターの引数を受け取る(log_func)
+  - 修飾すべき関数を受け取る(outer)
+  - 修飾すべき関数の引数を受け取る(inner)
+
+    ```Python
+    from collections.abc import Callable
+    from typing import Any
+
+
+    # デコレーターの引数を受け取る
+    def log_func(
+        details: bool = True,
+    ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+
+        # 修飾すべき関数を受け取る
+        def outer(func: Callable[..., Any]) -> Callable[..., Any]:
+            # 本来の関数に渡すべき引数を受け取る
+            def inner(*args, **keywds):
+                print("----------")
+                print(f"Name: {func.__name__}")
+                if details:
+                    print(f"Args: {args}")
+                    print(f"Keywds: {keywds}")
+                print("----------")
+                return func(*args, **keywds)
+
+            return inner
+
+        return outer
+
+
+    @log_func(details=False)
+    def hoge(x: int, y: int, m: str = "bar", n: str = "piyo") -> None:
+        print(f"hoge: {x}-{y}/{m}-{n}")
+
+
+    hoge(15, 37, m="ほげ", n="ぴょ")
+
+    ```
+
+#### 📒 9.1.5 クロージャー(関数閉方)
+
+- 上位のローカル変数を参照した入れ子の関数のことを**クロージャー(関数閉方)**と呼びます。
+- **スコープチェーンによる理解**
+  - 入れ子のinner関数(入れ子のローカルスコープ)
+  - トップレベルのlog_func関数(ローカルスコープ)
+  - グローバルスコープ
+
+    ```Python
+    from collections.abc import Callable
+
+
+    def counter(init: int) -> Callable[[], int]:
+        # カウント値
+        count = init
+
+        # カウント値をインクリメントする内部関数
+        def increment() -> int:
+            nonlocal count
+            count += 1
+            return count
+
+        return increment
+
+
+    c1 = counter(1)
+    c2 = counter(25)
+
+    print(c1())
+    print(c1())
+    print(c2())
+    print(c2())
+
+    ```
 
 ### 📒 9.2 ジュネレーター
+
+- **ジュネレーター**の見た目は、普通の関数です。
+- ジュネレーターはyieldという命令を利用することで、その時どきの値を返せる点が異なる。
+
+#### 📒 9.2.1 yield命令
+
+- yieldはreturnとよくにた命令で関数の値を呼び出し元に返す。
+  - return文 ➡ その場で関数を終了する
+  - yield文 ➡ 処理を一時停止します。
+
+  ```Python
+  from collections.abc import Generator
+
+
+  def my_gen() -> Generator[str]:
+      yield "あいうえお"
+      yield "かきくけこ"
+      yield "さしすせそ"
+
+
+  for value in my_gen():
+      print(value)
+
+  ```
+
+- **ジェネレーター関数の戻り値**
+  - ジェネレーター関数の戻り値は、Generatorオブジェクト
+  - for ループは、Generatorオブジェクトを取得して、さらにそこから個々のyield値を取得するまで担っている。
+
+#### 📒 9.2.2 素数を求めるジェネレーター
+
+```Python
+import math
+from collections.abc import Generator
+
+
+# 素数を求めるジェネレーター
+def get_primes() -> Generator[int]:
+    num = 2
+    while True:
+        if is_prime(num):
+            yield num
+        num += 1
+
+
+# 引数valueが素数であるかを判定する
+def is_prime(value: int) -> bool:
+    result = True
+    # 2 ～ sqrt(value)でvalue替わり消えれ宇(余りが0)ものがあるか
+    for i in range(2, math.floor(math.sqrt(value)) + 1):
+        if value % i == 0:
+            result = False
+            break
+    return result
+
+
+# 素数を順に出力する
+for prime in get_primes():
+    print(prime)
+    # 素数が100を超えたところで、終了
+    if prime > 100:
+        break
+```
 
 ### 📒 9.3 関数のモジュール化
 
