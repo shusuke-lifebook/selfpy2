@@ -3063,6 +3063,45 @@ for prime in get_primes():
         break
 ```
 
+#### 📒 9.2.3 ジュネレーターの主なメソッド
+
+- **ジュネレーターを正常終了**
+  - close
+- **ジュネレーターに例外を投げる**
+- **ジュネレーターに値を送出する**
+
+  ```Python
+  from collections.abc import Generator
+
+
+  def gen_com() -> Generator[str, str]:
+      while True:
+          # ユーザー入力を要求
+          n = yield input("名前を教えてください：")
+          # sendメソッドからの値でメッセージを生成
+          yield f"こんにちは、{n}さん！"
+
+
+  gen = gen_com()
+  for name in gen:
+      # ジュネレーターからの戻り値(入力値)を再送出
+      res = gen.send(name.upper())
+      # ジュネレーターから戻り値(あいさつメッセージ)を表示
+      print(res)
+
+  ```
+
+#### 📒 9.2.4 一部の処理を他のジェネレーターに委譲する
+
+- yield from 命令を利用することで、ジェネレーターの中で別のジェネレーター(サブジェネレーター)を呼び出しこれを列挙できる
+- yield from 命令
+
+  ```Python
+  yield from generator
+
+  generator: 他のジェネレーター
+  ```
+
 ### 📒 9.3 関数のモジュール化
 
 ### 📒 9.4 非同期処理
