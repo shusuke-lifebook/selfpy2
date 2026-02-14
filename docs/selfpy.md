@@ -3166,6 +3166,61 @@ for prime in get_primes():
     alias: 別名
     ```
 
+- **すべてのメンバーをインポートする**
+  - from ... import 命令で「\*」を用いることで、すべてのメンバーをインポートすることができる
+  - from ... import 命令(第２構文)
+
+    ```Python
+    from module import *
+
+    module: モジュール名
+    ```
+
+- **「import \*」でのインポートを制限する**
+  - 「from ... import \*」でインポートすべきメンバーを、モジュール側で制限することができる
+    - (1) **all**変数で定義する
+
+      ```Python
+      __all__ = ["hoge", "foo", "bar"]
+
+
+      def hoge() -> None:
+          print("hoge")
+
+
+      def foo() -> None:
+          print("foo")
+
+
+      def bar() -> None:
+          print("bar")
+
+
+      def piyo() -> None:
+          print("piyo")
+
+      ```
+
+    - (2) 「\_名前」で命名する
+
+      ```Python
+      def hoge() -> None:
+          print("hoge")
+
+
+      def foo() -> None:
+          print("foo")
+
+
+      def bar() -> None:
+          print("bar")
+
+
+      def _piyo() -> None:
+          print("piyo")
+
+      ```
+
 ### 📒 9.4 非同期処理
 
 ### 📒 9.5 ドキュメンテーション
