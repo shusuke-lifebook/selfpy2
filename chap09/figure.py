@@ -1,0 +1,14 @@
+import math
+
+
+def get_triangle(base: float, height: float) -> float:
+    return base * height / 2
+
+
+def get_circle(radius: float) -> float:
+    return radius * radius * math.pi
+
+
+if __name__ == "__main__":
+    print(f"三角形の面積: {get_triangle(10, 2)}")
+    print(f"円の面積: {get_circle(5)}")
