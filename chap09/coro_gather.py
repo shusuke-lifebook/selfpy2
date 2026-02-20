@@ -5,7 +5,11 @@ from coro import heavy
 
 
 async def main() -> None:
-    print(await asyncio.gather(heavy("hoge", 2), heavy("bar", 5), heavy("piyo", 1)))
+    print(
+        await asyncio.gather(
+            heavy("hoge", 2), heavy("bar", 5), heavy("piyo", 1), return_exceptions=True
+        )
+    )
 
 
 start = time.time()

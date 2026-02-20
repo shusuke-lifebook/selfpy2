@@ -3398,4 +3398,8 @@ for prime in get_primes():
       statements: タスクを追加するためのコード
       ```
 
+#### 📒 9.4.3 非awaitableな処理をawait式に渡す
+
+- イベントループのrun_in_executorメソッドを利用することで、非awaitableな処理をコルーチンとして扱うことができる
+
 ### 📒 9.5 ドキュメンテーション
