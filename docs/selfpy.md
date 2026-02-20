@@ -563,7 +563,7 @@ end: 終了位置
 step: ステップ(増減)
 ```
 
-#### 5.2.4 文字の種類を判定する
+#### 📒 5.2.4 文字の種類を判定する
 
 - 文字列に含まれる文字の種類を判定するには、isxxxxx メソッドを利用する。
   |メソッドの種類|概要|
@@ -1682,7 +1682,7 @@ endpos: 検索終了位置
     | (?<=B)A | 肯定的後読み (Aの直後にBがある場合にだけ、Aにマッチ)     |
     | (?<!B)A | 否定的後読み (Aの直後にBがない場合だけ、Aにマッチ)       |
 
-#### 📒 7.1.6　正規表現で文字列を置き換える
+#### 📒 7.1.6 正規表現で文字列を置き換える
 
 - subメソッドを用いれば、正規表現にマッチした文字列を置き換えることができる
 
@@ -2672,12 +2672,12 @@ print(*data, **keywd)  # type: ignore
 
   - NamedTuple関数
 
-```Python
-NamedTuple(typename, field_names)
+    ```Python
+    NamedTuple(typename, field_names)
 
-typename: 型の名前
-field_names: 「要素名, 型」形式(タプル)のリスト
-```
+    typename: 型の名前
+    field_names: 「要素名, 型」形式(タプル)のリスト
+    ```
 
 #### 📒 8.5.2 再帰関数
 
@@ -3295,5 +3295,107 @@ for prime in get_primes():
 - Pythonではコルーチンの性質を利用して、
   - 現在のコルーチンを処理する途中で待ちが発生したら中断
   - その間に他のコルーチンを実行し、終わったら元のコルーチンを再開
+- **コルーチンの定義**
+
+  ```Python
+  async def コルーチン名(引数, ...):
+    ... コルーチンの本体 ...
+  ```
+
+  - コルーチンはcoroutineオブジェクトを返却するだけです。そのまま関数の呼び出しでは、コルーチンは実行できない点に注目。
+  - asyncio.run関数を利用する
+
+    ```Python
+    run(coro, *, debug = None)
+
+    coro: 実行するコルーチン
+    debug: デバックモードで実行するか(Trueで実行モードを有効化)
+    ```
+
+#### 📒 9.4.2 複数の非同期処理を実行する
+
+- **タスクを利用した並列化**
+  - **タスク(Task)**を利用する。Taskとはおおざっぱに言うと、コルーチンを並行に実行するためのオブジェクトです。
+  - create_task関数にコルーチンを渡すことで、Taskを生成する
+
+    ```Python
+    import asyncio
+    import time
+
+    from coro import heavy
+
+
+    async def main() -> None:
+        t1 = asyncio.create_task(heavy("hoge", 2))
+        t2 = asyncio.create_task(heavy("bar", 5))
+        t3 = asyncio.create_task(heavy("piyo", 1))
+        print(await t1)
+        print(await t2)
+        print(await t3)
+
+
+    start = time.time()
+    # コルーチンmainを実行
+    asyncio.run(main())
+    end = time.time()
+    print(f"Process Time: {end - start}")
+
+    ```
+
+  - **gather関数を利用した例**
+    - 無条件に非同期処理を並列化するならば、asyncio.gather関数を利用しても問題ない。
+
+      ```Python
+      import asyncio
+      import time
+
+      from coro import heavy
+
+
+      async def main() -> None:
+          print(await asyncio.gather(heavy("hoge", 2), heavy("bar", 5), heavy("piyo", 1)))
+
+
+      start = time.time()
+      # コルーチンmainを実行
+      asyncio.run(main())
+      end = time.time()
+      print(f"Process Time: {end - start}")
+
+      ```
+
+  - **TaskGroupを利用した例**
+    - Python3.11ではタスクグループ化するためのTaskGroupが追加された。
+
+      ```Python
+      import asyncio
+      import time
+
+      from coro import heavy
+
+
+      async def main() -> None:
+          async with asyncio.TaskGroup() as group:
+              t1 = group.create_task(heavy("hoge", 2))
+              t2 = group.create_task(heavy("bar", 5))
+              t3 = group.create_task(heavy("piyo", 1))
+          print([t1.result(), t2.result(), t3.result()])
+
+
+      start = time.time()
+      # コルーチンmainを実行
+      asyncio.run(main())
+      end = time.time()
+      print(f"Process Time: {end - start}")
+
+      ```
+
+      ```Python
+      async with TaskGroup() as group:
+        ... statements ...
+
+      group: TaskGroupオブジェクトを格納する変数
+      statements: タスクを追加するためのコード
+      ```
 
 ### 📒 9.5 ドキュメンテーション
