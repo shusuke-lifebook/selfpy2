@@ -3508,3 +3508,8 @@ for prime in get_primes():
   - 「chap09/mysphinx」ディレクトリで「sphinx-quickstart docs」とコマンドを実行してみよう。
   - sphinx-apidoc -f -o ./docs .
   - sphinx-build -b html ./docs ./docs/\_build
+
+#### 📒 9.5.3 デコレーターにおけるdocstring
+
+- デコレーターを利用する場合、本来の関数に記述したdocstringが上書きされてしまうので注意。
+- functoolsモジュールの@wrapsデコレーターで、上書きを打ち消すこと。
