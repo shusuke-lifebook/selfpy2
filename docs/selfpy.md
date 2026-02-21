@@ -3484,3 +3484,21 @@ for prime in get_primes():
     ```
 
 ### 📒 9.5 ドキュメンテーション
+
+- ユーザー定義関数を定義するようになると、最低限、利用者を意識したコメントが必要になってくる
+- これらの情報は別個の仕様書として用意しても構わないが、そのドキュメントは大概陳腐化する。
+- Pythonは関数／型の仕様をコード内のコメントとして記述するための仕組みを用意している。**docstring**(ドックストリング)と呼ばれる構文です。
+
+#### 📒 9.5.1 docstringの基本
+
+- docstringは単なる複数行コメントです。'''～'''、"""～"""で表す。
+- 記述場所が限定されている。
+  - def/classブロックの先頭に記述する、別のコードが挟まると、正しく認識しないので要注意。
+- docstringは決まった形式ではないが、見本にすべきスタイルはいくつか存在するので、以下の慣例に沿うことを勧める。
+  - [Googleスタイル](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
+  - [NumPyスタイル](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)
+  - [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/)
+
+#### 📒 9.5.2 ドキュメント生成ツール「Sphinx」
+- Sphinxのインストール
+  - pip install -U sphinx
