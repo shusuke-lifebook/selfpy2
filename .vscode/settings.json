@@ -33,5 +33,19 @@
 
   // --- gitの設定 ---
   "git.autofetch": true,
-  "git.autofetchPeriod": 180
+  "git.autofetchPeriod": 180,
+
+  // Djangoのプラグインの有効でhtmlがdjとなるのを防ぐ対応
+  "vsicons.associations.files": [
+    {
+      "icon": "html",
+      "extensions": ["html"],
+      "format": "svg"
+    },
+    {
+      "icon": "django",
+      "extensions": ["djhtml", "jinja"],
+      "format": "svg"
+    }
+  ]
 }

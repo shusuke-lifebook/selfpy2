@@ -3500,5 +3500,11 @@ for prime in get_primes():
   - [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/)
 
 #### 📒 9.5.2 ドキュメント生成ツール「Sphinx」
+
 - Sphinxのインストール
   - pip install -U sphinx
+- ドキュメント生成の準備を行う
+  - Sphinxdではドキュメントを生成するためのコマンド類自動生成するためにsphinx-quickstartコマンドが用意されている。
+  - 「chap09/mysphinx」ディレクトリで「sphinx-quickstart docs」とコマンドを実行してみよう。
+  - sphinx-apidoc -f -o ./docs .
+  - sphinx-build -b html ./docs ./docs/\_build
