@@ -47,5 +47,14 @@
       "extensions": ["djhtml", "jinja"],
       "format": "svg"
     }
-  ]
+  ],
+
+  "[markdown]": {
+    "editor.inlineSuggest.enabled": false,
+    "editor.quickSuggestions": {
+      "other": false,
+      "comments": false,
+      "strings": false
+    }
+  }
 }
