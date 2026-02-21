@@ -3401,5 +3401,51 @@ for prime in get_primes():
 #### 📒 9.4.3 非awaitableな処理をawait式に渡す
 
 - イベントループのrun_in_executorメソッドを利用することで、非awaitableな処理をコルーチンとして扱うことができる
+  - run_in_executorメソッド
+
+    ```Python
+    run_in_executor(executor, func, *args)
+
+    executor: 非同期呼び出しを管理するエクゼキュター
+    func: 実行する処理
+    args: 引数 func に渡す引数(群)
+    ```
+
+    ```Python
+    import asyncio
+    import time
+
+    import requests
+
+
+    # 指定のURLにリクエストし結果を取得
+    async def get_content(url) -> str:
+        print(f"start {url}")
+        loop = asyncio.get_event_loop()
+        res = await loop.run_in_executor(None, requests.get, url)
+        print(f"end {url}")
+        return res.text[:100]
+
+
+    # 非同期処理のエントリーポイント
+    async def main() -> tuple[str, ...]:
+        return await asyncio.gather(
+            get_content("https://codezine.jp"),
+            get_content("https://wings.msn.to"),
+            get_content("https://www.web-deli.com"),
+        )
+
+
+    start = time.time()
+    result = asyncio.run(main())
+    end = time.time()
+    print(result)
+    print(f"Process Time: {end - start}")
+
+    ```
+
+  - [AIOHTTP](https://docs.aiohttp.org/en/stable/)
+    - HTTP通信であればネイティブに対応したHTTP通信ライブラリ「aiohttp」があるので、こちらを検討する
+    - pip install aiohttp
 
 ### 📒 9.5 ドキュメンテーション

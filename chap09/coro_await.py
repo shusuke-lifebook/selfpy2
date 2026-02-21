@@ -7,7 +7,8 @@ import requests
 # 指定のURLにリクエストし結果を取得
 async def get_content(url) -> str:
     print(f"start {url}")
-    res = requests.request("get", url)
+    loop = asyncio.get_event_loop()
+    res = await loop.run_in_executor(None, requests.get, url)
     print(f"end {url}")
     return res.text[:100]
 
