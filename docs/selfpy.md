@@ -3614,6 +3614,7 @@ for prime in get_primes():
 
 - **メソッド**とは、クラスの中で定義された型に紐づいた関数のこと。
 - メソッドの定義
+
   ```Python
   def メソッド名(self, 引数:引数の型, ...) -> 戻り値の型:
     ... メソッドの本体 ...
@@ -3635,6 +3636,109 @@ for prime in get_primes():
       p.show()
 
   ```
+
+- **動的にメソッドを定義する**
+  (1) クラスに追加する
+  (2) インスタンスに追加する
+
+  ```Python
+  from types import MethodType
+
+
+  # 動的に追加するメソッドを準備
+  def show_first(self) -> None:
+      print(f"名前は{self.firstname}です！")
+
+
+  def show_last(self) -> None:
+      print(f"苗字は{self.lastname}です！")
+
+
+  # 初期状態では__init__／showメソッドだけ
+  class Person:
+      def __init__(self, firstname: str, lastname: str) -> None:
+          self.firstname = firstname
+          self.lastname = lastname
+
+      def show(self) -> None:
+          print(f"私の名前は{self.lastname}{self.firstname}です！")
+
+
+  if __name__ == "__main__":
+      p1 = Person("太郎", "山田")
+      p2 = Person("次郎", "鈴木")
+      Person.show_first = show_first  # type: ignore
+      p1.show_last = MethodType(show_last, p1)  # type: ignore
+      p1.show_first()  # type: ignore
+      p1.show_last()  # type: ignore
+      p2.show_first()  # type: ignore
+      p2.show_last()  # type: ignore # エラー
+
+  ```
+
+#### 📒 10.1.4 クラスメソッド
+
+- **インスタンスメソッド**: インスタンス経由で呼び出すことを想定
+- **クラスメソッド**: インスタンスを生成しなくても「クラス名.メソッド名(...)」の形式で呼び出せる。
+  - クラスメソッドであることの条件は以下。
+    - @classmethodデコレーターを付与する
+    - 第一引数には「cls」を渡す
+
+    ```Python
+    class Area:
+        @classmethod
+        def circle(cls, radius: float) -> float:
+            return radius * radius * 3.14
+
+
+    if __name__ == "__main__":
+        print(Area.circle(10))
+        a = Area()
+        print(a.circle(10))
+
+    ```
+
+#### 📒 10.1.5 staticメソッド
+
+- クラスメソッドよく似たメソッドとして、**staticメソッド**がある。
+- staticメソッドは「クラス名.メソッド名(...)」の形式で呼び出せる点はクラスメソッドと同じ。以下が異なる点である。
+  - メソッドを@staticmethodデコレーターで修飾する
+  - 第一引数にcls(クラスそのもの)は不要(渡せない)
+
+```Python
+class Area:
+    @staticmethod
+    def circle(radius: float) -> float:
+        return radius * radius * 3.14
+
+
+if __name__ == "__main__":
+    print(Area.circle(10))
+
+```
+
+#### 📒 10.1.6 クラス変数
+
+- インスタンス変数: インスタンス経由でアクセスできる変数
+- クラス変数: クラスから直接アクセスできる変数
+
+  ```Python
+  class Area:
+      # 円周率を準備
+      PI = 3.14
+
+      @classmethod
+      def circle(cls, radius: float) -> float:
+          return radius * radius * cls.PI
+
+
+  if __name__ == "__main__":
+      print(Area.PI)
+      print(Area.circle(10))
+
+  ```
+
+- クラス変数はclassブロックの配下で「変数名 = 値」の形式で宣言するだけです。
 
 ### 📒 10.2 カプセル化
 
