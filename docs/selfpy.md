@@ -3612,6 +3612,30 @@ for prime in get_primes():
 
 #### 📒 10.1.3 メソッド
 
+- **メソッド**とは、クラスの中で定義された型に紐づいた関数のこと。
+- メソッドの定義
+  ```Python
+  def メソッド名(self, 引数:引数の型, ...) -> 戻り値の型:
+    ... メソッドの本体 ...
+  ```
+
+  ```Python
+  class Person:
+      def __init__(self, firstname: str, lastname: str) -> None:
+          self.firstname = firstname
+          self.lastname = lastname
+
+      # インスタンス変数の内容を出力
+      def show(self) -> None:
+          print(f"私の名前は{self.lastname}{self.firstname}です！")
+
+
+  if __name__ == "__main__":
+      p = Person("太郎", "山田")
+      p.show()
+
+  ```
+
 ### 📒 10.2 カプセル化
 
 ### 📒 10.3 継承
