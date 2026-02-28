@@ -3872,3 +3872,118 @@ class クラス名:
   - 上記のようになるとクラスを利用する側は面倒ですし、間違いのもと
 
 #### 📒 10.4.2 抽象メソッド
+
+- **抽象メソッド**とは、それ自体は中身(機能)を持たない「空のメソッド」のこと
+- **抽象クラス**とは、抽象メソッドを含んだクラスのこと。
+  - 抽象クラスを継承したクラスはすべての抽象メソッドをオーバーライドしないといけない義務を負う。
+
+    ```Python
+    from abc import ABC, abstractmethod
+    from typing import override
+
+
+    class Figure(ABC):
+        # width、heightを準備
+        def __init__(self, width: float, height: float) -> None:
+            self.width = width
+            self.height = height
+
+        # 面積を取得(ダミー)
+        @abstractmethod
+        def get_area(self) -> float:
+            pass
+
+
+    class Triangle(Figure):
+        # 三角形の面積を求めるためのget_areaメソッドを定義
+        @override
+        def get_area(self) -> float:
+            return self.width * self.height / 2
+
+
+    class Rectangle(Figure):
+        # 四角形の面積を求めるためのget_areaメソッドを定義
+        @override
+        def get_area(self) -> float:
+            return self.width * self.height
+
+
+    if __name__ == "__main__":
+        t = Triangle(10, 15)
+        r = Rectangle(10, 15)
+        print(t.get_area())
+        print(r.get_area())
+
+    ```
+
+  - 抽象クラス／抽象メソッドを定義するには
+    - abcモジュールのABCクラスを継承する
+    - 対象のメソッドを@abstractmethodデコレーターで修飾する
+
+- **isinstance関数**
+  - ポリモーフィズムの性質を理解するうえで、オブジェクトが実装している機能(抽象クラス)を確認することは重要です。
+
+    ```Python
+    # 抜粋
+    if __name__ == "__main__":
+        # Figure発生クラスのリストを準備
+        figs = [Triangle(10, 15), Rectangle(10, 15), Triangle(5, 1)]
+        # 配列figsの内容を順番に処理
+        for fig in figs:
+            if isinstance(fig, Figure):
+                print(f"{fig.__class__} : {fig.get_area()}")
+    ```
+
+#### 📒 10.4.3 ダックタイピング - Protocol
+
+- **型厳密な関係でうまくいかない場合**
+  - 例えば、与えられたオブジェクトのget_areaメソッドを利用して、「●○の面積は■□です」のようなメッセージを作成する例。
+- **Protocolによるダックタイピング**
+  - もしもそれがアヒル(duck)のように歩き、アヒルのように鳴くのであれば、それはアヒルに違いない
+
+    ```Python
+    from abc import ABC, abstractmethod
+    from typing import Protocol, override
+
+
+    class Figure(ABC):
+        def __init__(self, widht: float, height: float) -> None:
+            self.widht = widht
+            self.height = height
+
+        @abstractmethod
+        def get_area(self) -> float:
+            pass
+
+
+    class Triangle(Figure):
+        @override
+        def get_area(self) -> float:
+            return self.widht * self.height / 2
+
+
+    class Rectangle(Figure):
+        @override
+        def get_area(self) -> float:
+            return self.widht * self.height
+
+
+    class Areable(Protocol):
+        def get_area(self) -> float: ...
+
+
+    class Japan:
+        def get_area(self) -> float:
+            return 378000
+
+
+    def show_area(figure: Areable) -> None:
+        print(f"{figure.__class__.__name__}の面積は{figure.get_area()}です。")
+
+
+    if __name__ == "__main__":
+        show_area(Triangle(10, 15))
+        show_area(Rectangle(10, 15))
+        show_area(Japan())
+
+    ```
