@@ -4047,6 +4047,48 @@ class クラス名:
 
 #### 📒 11.1.5 例外グループ
 
+- **例外グループ**(ExceptionGroup)とは、複数の例外を纏めるためのオブジェクト。Python3.11ではこのExcepitonGroupに加えて、複数の例外を処理するためのexcept\*ブロックが追加された。
+
+  ```Python
+  try:
+      raise ExceptionGroup(
+          "Multi Exception!!",
+          [ValueError("value is invalid..."), TypeError("Type is unknown.")],
+      )
+  except ValueError as e:
+      print(f"Value: {e.args[0]}")
+  except ExceptionGroup as e:
+      print(f"Group: {e.args[0]}")
+
+  ```
+
+- 例外グループもまた、例外の一種なので、インスタンス化したものをraise命令で投げることが可能です。
+
+  ```Python
+  ExceptionGroup(msg, excs)
+
+  msg: 例外メッセージ
+  excs: 束ねる例外のリスト
+  ```
+
+- **except\***ブロック
+  - except\*ブロックでは例外グループ配下の例外を識別できるとともに、マッチした**すべての例外**を処理できる
+
+    ```Python
+    try:
+        raise ExceptionGroup(
+            "Multi Exception!!",
+            [ValueError("Value is invalid..."), TypeError("Type is unknown.")],
+        )
+    except* ValueError as e:
+        print(f"Value: {repr(e)}")
+    except* TypeError as e:
+        print(f"Type: {repr(e)}")
+    except* IndexError as e:
+        print(f"Index: {repr(e)}")
+
+    ```
+
 ### 📒 11.2 特殊メソッド
 
 ### 📒 11.3 データクラス
