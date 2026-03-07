@@ -4115,6 +4115,37 @@ class クラス名:
   - hashableであるためには \_\_hash\_\_メソッドを持つだけではなく
   - **生存期間中、ハッシュ値が変動してはならない(=不変でなければならない)**
 
+#### 📒 11.2.4 オブジェクトを四則演算
+
+- Pythonでは「+」「>」のような演算子をクラス独自に再定義できる。これを**演算子のオーバーロード**という。
+
+```Python
+from __future__ import annotations
+
+
+class Coordinate:
+    def __init__(self, x: float, y: float) -> None:
+        self.x = x
+        self.y = y
+
+    # Coordinate同士の加算
+    def __add__(self, other: Coordinate) -> Coordinate:
+        return Coordinate(self.x + other.x, self.y + other.y)
+
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y})"
+
+
+if __name__ == "__main__":
+    # Coordinate同士の加算
+    c1 = Coordinate(10.5, 20.5)
+    c2 = Coordinate(15.5, 25.5)
+    print(c1 + c2)
+
+```
+
+#### 📒 11.2.5 オブジェクト同士を比較する
+
 ### 📒 11.3 データクラス
 
 ### 📒 11.4 列挙型(Enum)
