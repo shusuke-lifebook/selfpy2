@@ -2194,11 +2194,11 @@ endpos: 検索終了位置
 
 - 組み込み関数dirを利用することで、指定されたモジュール／クラスに属する要素を確認することができる
 
-### 📒 8. ユーザー定義関数
+## 📒 8. ユーザー定義関数
 
 - アプリ開発者が自らがクラス／関数を定義することもできる。このようなクラス／関数を、**ユーザー定義クラス**、**ユーザー定義関数**という。
 
-#### 📒 8.1 ユーザー定義関数の基本
+### 📒 8.1 ユーザー定義関数の基本
 
 - ユーザー定義関数とは、まさに重複したコードを一か所にまとめるための仕組み
 
@@ -4145,6 +4145,194 @@ if __name__ == "__main__":
 ```
 
 #### 📒 11.2.5 オブジェクト同士を比較する
+
+-「>」「<=」などの演算子をオーバーロードすることで、オブジェクト同士の大小を比較することができる。
+
+```Python
+from __future__ import annotations
+
+
+class Coordinate:
+    def __init__(self, x: float, y: float) -> None:
+        self.x = x
+        self.y = y
+
+    # 「<」ルール
+    def __lt__(self, other: Coordinate) -> bool:
+        return self.x**2 + self.y**2 < other.x**2 + other.y**2
+
+    # 「<=」 ルール
+    def __le__(self, other: Coordinate) -> bool:
+        return self.x**2 + self.y**2 <= other.x**2 + other.y**2
+
+    # 「>」 ルール
+    def __gt__(self, other: Coordinate) -> bool:
+        return not self.__le__(other)
+
+    # 「>=」ルール
+    def __ge__(self, other: Coordinate) -> bool:
+        return not self.__le__(other)
+
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y})"
+
+
+if __name__ == "__main__":
+    c1 = Coordinate(1, 2)
+    c2 = Coordinate(15, 25)
+    c3 = Coordinate(2, 1)
+    print(c1 < c2)
+    print(c1 <= c3)
+    print(c1 <= c2)
+    print(c1 > c2)
+
+```
+
+#### 📒 11.2.6 データを変換する
+
+- インスタンスの内容を特定の型で返すためのメソッドがある。それぞれに対応する型変換関数によって呼び出される。
+
+#### 📒 11.2.7 オブジェクトの真偽を判定する
+
+- オブジェクトが真偽値として判別されるような状況を**bool演算コンテキスト**という。
+
+```Python
+import math
+
+
+class Coordinate:
+    def __init__(self, x: float, y: float) -> None:
+        self.x = x
+        self.y = y
+
+    # 真偽判定のためのメソッド
+    def __bool__(self) -> bool:
+        print("__bool__")
+        return self.x != 0 or self.y != 0
+
+    # オブジェクトの長さを求めるメソッド
+    def __len__(self) -> int:
+        print("__len__")
+        return int(math.sqrt(self.x**2 + self.y**2))
+
+
+if __name__ == "__main__":
+    c = Coordinate(0, 0)
+    if c:
+        print("cはTrueです。")
+    else:
+        print("cはFalseです。")
+
+```
+
+#### 📒 11.2.8 属性の取得／設定の挙動をカスタマイズする
+
+- 属性操作に関連する予約メソッドがある。
+
+  | メソッド                     | 呼び出しタイミング                      |
+  | :--------------------------- | :-------------------------------------- |
+  | **getattributes**(self,name) | 属性を取得するとき(常時)                |
+  | **getattr**(self,name)       | 属性を取得するとき(存在しないとき)      |
+  | **setattr**(self,name,value) | 属性を設定するとき                      |
+  | **delattr**(self,name)       | del命令で属性を削除するとき             |
+  | **dir**(self)                | インスタンスがdir関数で呼び出されたとき |
+
+  ```Python
+  from typing import Any
+
+
+  class MyInfo:
+      # 属性の格納ための__data(辞書)を準備
+      def __init__(self) -> None:
+          super().__setattr__("__data", {})
+
+      # 指定された属性を__dataから取得
+      def __getattr__(self, name: str) -> Any:
+          try:
+              return super().__getattribute__("__data")[name]
+          except KeyError as ex:
+              return None
+
+      # 指定された属性を__dataに格納
+      def __setattr__(self, name: str, value: Any) -> None:
+          super().__getattribute__("__data")[name] = value
+
+
+  if __name__ == "__main__":
+      i = MyInfo()
+      i.score = 58
+      i.hobby = "卓球"
+      print(i.hobby)
+      print(i.__dict__)
+
+  ```
+
+#### 📒 11.2.9 ディスクリプター
+
+- **ディスクリプター**とは以下のようなメソッドを備えたクラスです。
+
+  | メソッド                  | 呼び出しのタイミング |
+  | :------------------------ | :------------------- |
+  | **get**(self, obj, type)  | 属性を取得するとき   |
+  | **set**(self, obj, value) | 属性を設定するとき   |
+  | **deleta**(self, obj)     | 属性を削除するとき   |
+
+  ```Python
+  from typing import Any
+
+
+  # ディスクリプターの定義
+  class LogProp:
+      # 対象の属性名(name)を設定
+      def __init__(self, name: str) -> None:
+          self.name = name
+
+      # 属性取得の処理
+      def __get__(self, obj: object, t: type) -> Any:
+          print(f"{self.name}: get")
+          return obj.__dict__[self.name]
+
+      # 属性設定の処理
+      def __set__(self, obj: object, value: Any) -> None:
+          print(f"{self.name}: set {value}")
+          obj.__dict__[self.name] = value
+
+
+  class App:
+      # ディスクリプターを定義
+      title = LogProp("title")
+
+
+  if __name__ == "__main__":
+      app = App()
+      app.title = "独習Python"
+      print(app.title)
+
+  ```
+
+#### 📒 11.2.10 インスタンスを関数的に呼び出す
+
+- **\_\_call\_\_**メソッドはオブジェクトが関数の形式で呼びされた場合にコールされる
+
+  ```Python
+  import math
+
+
+  class Coordinate:
+      def __init__(self, x: float, y: float) -> None:
+          self.x = x
+          self.y = y
+
+      # c(x, y)形式で呼び出せ、距離を求める
+      def __call__(self, o_x: float, o_y: float) -> float:
+          return math.sqrt((o_x - self.x) ** 2 + (o_y - self.y) ** 2)
+
+
+  if __name__ == "__main__":
+      c = Coordinate(10, 20)
+      print(c(5, 15))
+
+  ```
 
 ### 📒 11.3 データクラス
 
