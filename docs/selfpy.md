@@ -4352,6 +4352,51 @@ if __name__ == "__main__":
     フィールド名: 型(名前)
     ```
 
+#### 📒 11.3.2 フィールドのカスタマイズ
+
+- フィールドの挙動は、dataclasses.field関数を利用することで、さまざまなカスタマイズできる。
+- age フィールドを\_\_eq\_\_メソッドの判定から除外する例です。
+
+  ```Python
+  import dataclasses
+
+
+  @dataclasses.dataclass()
+  class Person:
+      firstname: str
+      lastname: str
+      age: int = dataclasses.field(default=0, compare=False)
+
+
+  if __name__ == "__main__":
+      p1 = Person("太郎", "山田", 58)
+      p2 = Person("太郎", "山田", 11)
+      print(p1 == p2)
+
+  ```
+
+| キーワード      | 概要                                                       | 既定値 |
+| :-------------- | :--------------------------------------------------------- | :----- |
+| default         | 既定値                                                     |        |
+| default_factory | 既定値を生成する関数                                       |        |
+| init            | \_\_init\_\_メソッドの引数に現在フィールドを含めるか       | True   |
+| repr            | \_\_repr\_\_メソッドの戻り値に現在フィールドを含めるか     | True   |
+| compare         | \_\_eq\_\_、\_\_gt\_\_などの判定に現在フィールを含めるか   | True   |
+| hash            | ハッシュ値の生成に現在のフィールドを利用するか             | None   |
+| kw_only         | \_\_init\*\_\_メソッドでキーワード引数としてのみ受け取るか | False  |
+
+#### 📒 11.3.3 イミュターブルなクラス
+
+#### 📒 11.3.4 hashableなクラスを作成する
+
+- データクラスを利用することで、hashableなクラスを比較的簡単に実装することが可能
+- frozenオプションを有効(true)にすることで可能。これで内部的には\_\_hash\_\_メソッドが自動生成される。
+  - @dataclassのeq/frozenオプションがTrueの場合に自動生成
+  - eqがTrue、frozenがFalseの場合、\_\_hash\_\_の戻り値をNoneに設定
+  - eqがFalseの場合、\_\_hash\_\_は生成されない
+
+#### 📒 11.3.5 データクラスの予約関数
+
 ### 📒 11.4 列挙型(Enum)
 
 ### 📒 11.5 ジェネリクス
