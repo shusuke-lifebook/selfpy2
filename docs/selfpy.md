@@ -4514,6 +4514,131 @@ if __name__ == "__main__":
 
 ### 📒 11.4 列挙型(Enum)
 
+- 値のそのものには意味がなく、シンボル(名前)として意味を持つ定数の集合を表すのに定数を利用するのは誤り。
+- 例えば、四季を表す以下のコードがあったとする。
+
+  ```Python
+  SPRING = 1
+  SUMMER = 2
+  AUTUMN = 3
+  WINTER = 4
+
+
+  def process_season(season: int) -> None:
+      # 何らかの処理
+      print(season)
+
+
+  process_season(SUMMER)
+  process_season(4)
+
+  ```
+
+  - 0から3以外の値を渡しても型違反は検出されない。関数内の処理によって、エラーなるかもしれませんがエラーが発覚するのは実行時。このような問題を解決するのが**列挙型**です。
+
+#### 📒 11.4.1 列挙型の基本
+
+- 列挙型を利用することで、先ほどの定数群は以下のように書き換えることができる。
+
+  ```Python
+  from enum import Enum
+
+
+  class Season(Enum):
+      SPRING = 1
+      SUMMER = 2
+      AUTUMN = 3
+      WINTER = 4
+
+
+  def process_season(season: Season) -> None:
+      print(season)
+
+
+  process_season(Season.SUMMER)
+  # process_season(4)
+
+  ```
+
+```Python
+class 名前(Enum):
+  列挙定数
+  ...
+```
+
+#### 📒 11.4.2 列挙型の基本機能
+
+- 列挙型はEnumクラスの派生型です。あらかじめ以下の特殊メソッドを備えている。
+
+| メソッド          | 概要                                                           |
+| :---------------- | :------------------------------------------------------------- |
+| \_\_call\_\_      | obj(...)で参照したとき(関数形式)、対応する列挙値を取得         |
+| \_\_containes\_\_ | in演算子で呼び出したとき、指定の列挙値が存在するかを判定       |
+| \_\_dir\_\_       | dir関数が呼び出したとき、予約属性とともに配下の列挙値を取得    |
+| \_\_getitem\_\_   | obj[key]で参照した時に、対応する列挙値を取得                   |
+| \_\_iter\_\_      | for ... in命令で呼び出したとき、配下のメンバーを定義順に取得   |
+| \_\_len\_\_       | len関数で呼び出したとき、メンバーの個数を取得                  |
+| \_\_reversed\_\_  | reserved関数で呼び出したとき、配下のメンバーを定義の逆順で取得 |
+
+```Python
+from enum import Enum
+
+
+class Season(Enum):
+    SPRING = 1
+    SUMMER = 2
+    AUTUMN = 3
+    WINTER = 4
+
+
+for season in Season:
+    print(f"{season.name}: {season.value}")
+
+print(Season(1))
+print(Season["SPRING"])
+print(1 in Season)
+print(len(Season))
+print(list(reversed(Season)))
+
+```
+
+#### 📒 11.4.3 列挙型のさまざまな定義方法
+
+- **関数型**で定義する
+
+  ```Python
+  from enum import Enum
+
+  Season = Enum("Season", "SPRING SUMMER AUTUMN WINTER")
+  # Season = Enum('Season', (('SPRING', 10), ('SUMMER', 20),
+  #                          ('AUTUMN', 30), ('WINTER', 40)))
+  # Season = Enum('Season', {
+  #     'SPRING': 1, 'SUMMER': 2, 'AUTUMN': 3, 'WINTER': 4})
+
+  for season in Season:
+      print(f"{season.name}: {season.value}")
+  ```
+
+- **列挙定数のエイリアス**
+  - 列挙型には同じ値を割り当てても構わない。例えば以下はAUTUMNとFALLが同じ値を持っているので、後に定義されたFALLがAUTUMNのエイリアス(別名)としてみなされる。
+
+    ```Python
+    from enum import Enum
+
+
+    class Season(Enum):
+        SPRING = 1
+        SUMMER = 2
+        AUTUMN = 3
+        FALL = AUTUMN
+        WINTER = 4
+
+
+    print(Season.FALL.name)
+    print(len(Season))
+
+    ```
+
 ### 📒 11.5 ジェネリクス
 
 ### 📒 11.6 イテレーター
