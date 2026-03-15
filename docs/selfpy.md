@@ -4621,6 +4621,7 @@ print(list(reversed(Season)))
 
 - **列挙定数のエイリアス**
   - 列挙型には同じ値を割り当てても構わない。例えば以下はAUTUMNとFALLが同じ値を持っているので、後に定義されたFALLがAUTUMNのエイリアス(別名)としてみなされる。
+  - ただし、時として意図しない列挙定数の重複を避けたいというときもある。そのような場合には列挙型に@uniqueデコレーターを付与してください。
 
     ```Python
     from enum import Enum
@@ -4638,6 +4639,96 @@ print(list(reversed(Season)))
     print(len(Season))
 
     ```
+
+- **列挙値を自動で採番する**
+  - auto関数で値を自動採番しても構わない。
+
+    ```Python
+    from enum import Enum, auto
+
+
+    class Season(Enum):
+        SPRING = auto()
+        SUMMER = auto()
+        AUTUMN = auto()
+        WINTER = auto()
+
+
+    print(Season.SUMMER.value)
+
+    ```
+
+- **数値／文字列と比較できる列挙型**
+  - 文字列／整数との比較するのであれば、StrEnum/IntEnumの利用することをお勧めする。
+  - StrEnum型を利用した場合、auto関数による自動列挙値はメンバー名の小文字バージョンになる
+
+    ```Python
+    from enum import Enum, auto
+
+
+    class Season(Enum):
+        SPRING = auto()
+        SUMMER = auto()
+        AUTUMN = auto()
+        WINTER = auto()
+
+
+    print(Season.SUMMER.value)
+
+    ```
+
+- **列挙型でメソッドを定義する**
+  - 列挙型の実体はクラス。一般的なクラスと同様に以下が可能。
+    - インスタンス変数、メソッドなどのメンバーの定義
+    - 以下の例はSeason列挙型に日本語名(jpname)、開始月(start)、終了月(end)などを持たせるとともに、これらの情報をメッセージとして取得するmessageプロパティを実装した例です。
+
+      ```Python
+      from enum import Enum
+
+
+      class Season(Enum):
+          SPRING = ("春", 3, 5)
+          SUMMER = ("夏", 6, 8)
+          AUTUMN = ("秋", 9, 11)
+          WINTER = ("冬", 12, 2)
+
+          # 初期化メソッド
+          def __init__(self, jpname: str, start: int, end: int) -> None:
+              self.jpname = jpname
+              self.start = start
+              self.end = end
+
+          # 季節の情報を返す
+          @property
+          def message(self) -> str:
+              return f"{self.jpname}は{self.start}～{self.end}月です。"
+
+
+      print(Season.SUMMER.start)
+      print(Season.SUMMER.message)
+
+      ```
+
+#### 📒 11.4.4 ビットフィールドによるフラグ管理
+
+- **ビットフィールド**とは、複数のフラグ(オンオフ)をビットの並びとして表現すること。
+- **Flagクラスの基本**
+
+  ```Python
+  from enum import Flag, auto
+
+
+  class FontStyle(Flag):
+      BOLD = auto()
+      ITALIC = auto()
+      UNDERLINE = auto()
+      STRIKETHROUGH = auto()
+
+
+  for style in FontStyle:
+      print(f"{style.name}: {style.value} (={bin(style.value)})")
+
+  ```
 
 ### 📒 11.5 ジェネリクス
 
