@@ -4732,6 +4732,44 @@ print(list(reversed(Season)))
 
 ### 📒 11.5 ジェネリクス
 
+- **ジェネリクス**(Generics)は、汎用的な(=任意の型を受け取る)クラス／メソッドに対して特定の型を割り当てて、その型専用のクラスを生成する仕組み。ジェネリクスを利用した代表的な型として、list, set, dictのような型がある。
+
+#### 📒 11.5.1 ジェネリクスの基本
+
+- ジェネリクス型ではまず、特定の型を受け取るための**型パラメーター**を宣言する
+  - クラス名の後方、[...]が型パラメーター
+    - 型パラメーター([...])の中で宣言された変数のことを**型変数**という
+    - 型変数の名前は、識別子のルールの範囲で自由に決めることが可能。
+      - ただし、慣例的にはT(Type),E(Element),K(Key),V(Value)のような大文字アルファベット1文字をよく利用する。
+    - 辞書(dict)のように、カンマ区切りで複数の型変数を受け取ることもできる
+    - 型変数はジェネリクス型配下のメンバー定義の中で
+      - インスタンス変数
+      - メソッドの引数、戻り値
+      - などの型を表すために利用できる。
+
+        ```Python
+        from typing import Self
+
+
+        class MyStack[T]:
+            def __init__(self) -> None:
+                self._items: list[T] = []
+
+            def push(self, item: T) -> Self:
+                self._items.append(item)
+                return self
+
+            def pop(self) -> T:
+                return self._items.pop()
+
+
+        if __name__ == "__main__":
+            s = MyStack[int]()
+            s.push(10).push(20).push(30)
+            print(s.pop())
+
+        ```
+
 ### 📒 11.6 イテレーター
 
 ### 📒 11.7 メタクラス
