@@ -4770,6 +4770,145 @@ print(list(reversed(Season)))
 
         ```
 
+#### 📒 11.5.2 型変数の制約条件
+
+- ジェネリクスでは型パラメーターに対して制約(境界型)を付与することができる
+
+  ```Python
+  from collections import defaultdict
+
+  class GenericConstraint[T: dict]:
+      def __init__(self, value: T) -> None:
+          self.value = value
+
+      def get(self) -> tuple:
+          return self.value.popitem()
+
+
+  if __name__ == "__main__":
+      GenericConstraint({"a": 1}).get()
+      GenericConstraint(defaultdict(int)).get()
+      # GenericConstraint(13).get()
+
+  ```
+
+- 上記で、**型パラメーターTは、境界型(ここではdict)を継承していること**
+
+#### 📒 11.5.3 ジェネリクス関数
+
+- ジェネリクス関数では、関数名の後方に型パラメーター([...])を列挙するだけ。
+- 宣言された型変数を、そのまま関数の引数／戻り値として利用できる点はジェネリクス型の場合と同じ
+
+  ```Python
+  def get_elements_except[T](es: list[T], value: T) -> list[T]:
+      return [e for e in es if e != value]
+
+
+  print(get_elements_except([10, 12, 11, 10, 15], 10))
+  print(get_elements_except(["hoge", "foo", "bar", "foo"], "foo"))
+  ```
+
+- **クラスメソッド／staticメソッド**
+  - クラスメソッド／staticメソッドも関数の場合とほぼ同様にジェネリクス化できる
+
+    ```Python
+    class Util:
+        @staticmethod
+        def get_elements_except[T](es: list[T], value: T):
+            return [e for e in es if e != value]
+
+
+    print(Util.get_elements_except([10, 12, 11, 10, 15], 10))
+
+    ```
+
+#### 📒 11.5.4 デコレーターへの型ヒント
+
+```Python
+from collections.abc import Callable
+
+
+def log_func[**P, R](func: Callable[P, R]) -> Callable[P, R]:
+
+    def inner(*args: P.args, **kwargs: P.kwargs) -> R:
+        print("----------")
+        print(f"Name: {func.__name__}")
+        print(f"Args: {args}")
+        print(f"Keywds: {kwargs}")
+        print("----------")
+        return func(*args, **kwargs)
+
+    return inner
+
+
+@log_func
+def hoge(x: int, y: int, m: str = "bar", n: str = "piyo") -> None:
+    print(f"hoge: {x} - {y} / {m} - {n}")
+
+
+hoge(15, "37", m="ほげ", n="ぴよ")
+
+```
+
+- **引数を受け取るデコレーター**
+
+  ```Python
+  from collections.abc import Callable
+
+
+  def log_func[**P, R](
+      details: bool = True,
+  ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+
+      def outer(func: Callable[P, R]) -> Callable[P, R]:
+          def inner(*args: P.args, **kwargs: P.kwargs) -> R:
+              print("----------")
+              print(f"Name: {func.__name__}")
+              if details:
+                  print(f"Args: {args}")
+                  print(f"kwargs: {kwargs}")
+              print("----------")
+              return func(*args, **kwargs)
+
+          return inner
+
+      return outer
+
+
+  @log_func(details=False)
+  def hoge(x: int, y: int, m: str = "bar", n: str = "piyo") -> None:
+      print(f"hoge: {x}-{y}/{m}-{n}")
+
+
+  hoge(15, 37, m="ほげ", n="ぴよ")
+
+  ```
+
+- **引数を追加するデコレーター**
+
+  ```Python
+  from collections.abc import Callable
+  from typing import Concatenate
+
+
+  def prefix[**P, R](func: Callable[Concatenate[str, P], R]) -> Callable[P, R]:
+
+      def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+          return func("decorated", *args, **kwargs)
+
+      return wrapper
+
+
+  @prefix
+  def hoge(prefix: str, x: int, y: int) -> None:
+      print(f"{prefix}: {x + y}")
+
+
+  if __name__ == "__main__":
+      hoge(10, 20)
+
+  ```
+
 ### 📒 11.6 イテレーター
 
 ### 📒 11.7 メタクラス
