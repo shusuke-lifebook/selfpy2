@@ -4431,6 +4431,87 @@ if __name__ == "__main__":
 
     ```
 
+#### 📒 11.3.6 型付きの辞書を定義する - TypedDict
+
+- まとまったデータの受け渡しするという意味では、データクラスとよく似た仕組みとしてTypedDictがある。
+- 名前の通り、型付きの辞書です。
+- **TypedDict**を利用しない場合
+  ```Python
+  person: dict[str, str | int | bool] = {"name": "Yamada", "age": 25, "married": False}
+  person: dict[str, str | int | bool] = {
+      "name": "Yamada",
+      "age": "25歳",
+      "married": "未婚",
+  }
+  ```
+- **TypedDict**を利用する場合
+
+  ```Python
+  from typing import TypedDict
+
+
+  class PersonDict(TypedDict):
+      name: str
+      age: int
+      married: bool
+
+
+  # PersonDict = TypedDict(
+  #     'PersonDict', {'name': str, 'age': int, 'married': bool})
+
+  person: PersonDict = {"name": "Yamada", "age": 25, "married": False}
+  # person: PersonDict = {"name": "Yamada", "age": "25歳", "married": "未婚"}
+
+  # p1: PersonDict = {'name': 'Yamada', 'age': 25}
+  # p2: PersonDict = {'name': 'Yamada', 'age': 25, 'married': True, 'gender': 'male'}
+  ```
+
+  - 型付き辞書の宣言
+
+    ```Python
+    class name(TypedDict):
+      key: type
+      ...
+
+    name: 型の名前
+    key: キーの名前
+    type: 値のデータ型
+
+    ```
+
+  - NotRequired型を利用することで特定のキーを省略することも可能
+
+    ```Python
+    from typing import NotRequired, TypedDict
+
+
+    class PersonDict(TypedDict):
+        name: str
+        age: int
+        married: NotRequired[bool]
+
+
+    p1: PersonDict = {"name": "Yamada", "age": 25}
+    ```
+
+- **特定のキーを読み取り専用にする**
+  - Python3.13では特定のキーを読み取り専用にするReadOnly型も追加された。
+
+    ```Python
+    from typing import ReadOnly, TypedDict
+
+
+    class PersonDict(TypedDict):
+        name: ReadOnly[str]
+        age: int
+        married: bool
+
+
+    person: PersonDict = {"name": "Yamada", "age": 25, "married": False}
+    # person["name"] = "Suzuki"
+
+    ```
+
 ### 📒 11.4 列挙型(Enum)
 
 ### 📒 11.5 ジェネリクス
