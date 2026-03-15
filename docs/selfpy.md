@@ -4397,6 +4397,40 @@ if __name__ == "__main__":
 
 #### 📒 11.3.5 データクラスの予約関数
 
+- データクラスには、その他にもクラスを取得／操作するために以下のような関数が用意されている。
+- **すべてのフィールドを取得する**
+  - fields関数を利用することで、データクラス配下のすべてのフィールドを列挙できる。
+- **dict/tuple型に変換する**
+  - asdict/astuple関数を利用することで、データクラスからdict/tuple型の値を取得できる。
+- **オブジェクトを複製する**
+  - replace関数を利用することで、既存のインスタンスを複製できる。
+  - その際、引数をchangesを指定することでフィールドの値を置き換えます。
+
+    ```Python
+    replace(instance, **changes)
+
+    instance: 複製元のオブジェクト
+    changes: 置き換える値
+    ```
+
+    ```Python
+    import dataclasses
+
+
+    @dataclasses.dataclass()
+    class Person:
+        firstname: str
+        lastname: str
+
+
+    if __name__ == "__main__":
+        p = Person("次郎", "山田")
+        p2 = dataclasses.replace(p, firstname="太郎")
+        print(p)
+        print(p2)
+
+    ```
+
 ### 📒 11.4 列挙型(Enum)
 
 ### 📒 11.5 ジェネリクス
